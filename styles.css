@@ -1,0 +1,9 @@
+body {
+  font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
+  padding: 1rem;
+}
+form {
+  display: flex;
+  flex-direction: column;
+  max-width: 600px;
+}
