@@ -26,6 +26,9 @@ const syncAndSeed = async()=>{
     await Bookmarks.create({name: 'nypl', url: 'www.nypl.org', category: 'job search'});
     await Bookmarks.create({name: 'epfl', url: 'www.epfl.org', category: 'job search'});
     await Bookmarks.create({name: 'google', url: 'www.google.com', category: 'job search'});
+    await Bookmarks.create({name: 'bird', url: 'www.bird.com', category: 'animal'});
+    await Bookmarks.create({name: 'cat', url: 'www.cat.com', category: 'animal'});
+    await Bookmarks.create({name: 'Tree', url: 'www.tree.com', category: 'plant'});
 };
 
 

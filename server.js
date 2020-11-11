@@ -33,7 +33,7 @@ app.delete('/bookmarks/:id', async(req, res, next)=> {
 app.post('/bookmarks', async(req, res, next)=> {
     try{
         const bookmark = await Bookmarks.create({name: req.body.name, url: req.body.url, category: req.body.category});
-        res.redirect(`/bookmarks/${ bookmark.id }`)
+        res.redirect(`/bookmarks/${ bookmark.name }/${ bookmark.id }`)
     }
     catch(ex){
         next(ex);
@@ -44,7 +44,20 @@ app.post('/bookmarks', async(req, res, next)=> {
 //our main page
 app.get('/bookmarks', async(req, res, next)=> {
     try {
+        //gives me all my bookmarks but I want the book marks by category 
         const bookmarks = await Bookmarks.findAll();
+        //console.log(bookmarks);
+        //bookmarks is an array, so I can put all the categories in another array
+        //bookmarks.for((element)=>{console.log(element)},[]);
+        const arrCat = [];
+        bookmarks.forEach(element => {
+            if (!arrCat.includes(element.category)){
+                arrCat.push(element.category);
+            }
+            //console.log(element.category);
+        });
+        //an array of categories
+        //console.log(arrCat);
         //going to have to do some sort of filter
         res.send(`
             <html>
@@ -60,14 +73,49 @@ app.get('/bookmarks', async(req, res, next)=> {
                     <button>Create</button>
                 </form>    
                 </form>
+               
+                <ul>
+                ${    
+                     arrCat.map( cat => `
+                        <li>
+                        <a href='/bookmarks/${cat}'>
+                        ${ cat }
+                        </a> () 
+                        </li> 
+                        `).join('')
+                
+                }
+                </ul> 
+                </body>
+            </html>
+        `);
+    }
+    catch (ex){
+        next(ex);
+    }
+});
+
+app.get('/bookmarks/:name', async(req, res, next)=> {
+    try {
+        const bookmarks = await Bookmarks.findAll({where: {category: req.params.name}});
+        //going to have to do some sort of filter
+        res.send(`
+            <html>
+                <head>
+                    <link rel='stylesheet' href ='/styles.css' />
+                </head>
+                <body>
+                <h1>bookmarks</h1>
+
                 <ul>
                     ${ bookmarks.map( bookmark => `
                         <li>
-                        <a href='/bookmarks/${bookmark.id}'>
+                        <a href='/bookmarks/${bookmark.name}/${bookmark.id}'>
                         ${ bookmark.name}
                         </a>
-                        </li>
+                        </li> 
                         `).join('')}
+
                 </ul>
                 </body>
             </html>
@@ -79,8 +127,7 @@ app.get('/bookmarks', async(req, res, next)=> {
 });
 
 
-
-app.get('/bookmarks/:id', async(req, res, next)=> {
+app.get('/bookmarks/:name/:id', async(req, res, next)=> {
     try {
         const bookmark = [await Bookmarks.findByPk(req.params.id)][0];
         //don't yet know how to send to outside website
