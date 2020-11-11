@@ -50,12 +50,31 @@ app.get('/bookmarks', async(req, res, next)=> {
         //bookmarks is an array, so I can put all the categories in another array
         //bookmarks.for((element)=>{console.log(element)},[]);
         const arrCat = [];
+        const arrCat2 = {};
         bookmarks.forEach(element => {
             if (!arrCat.includes(element.category)){
                 arrCat.push(element.category);
             }
             //console.log(element.category);
         });
+
+        for (let i = 0; i<bookmarks.length; i++){
+            if (arrCat2.hasOwnProperty(bookmarks[i].category)){
+                //console.log(bookmarks[i].category);
+                arrCat2[bookmarks[i].category] += 1;
+            }
+            else {
+                arrCat2[bookmarks[i].category] = 1;
+            }
+        }
+        console.log(arrCat2);
+        // for (const [key, value] of Object.entries(arrCat2)){
+        //     console.log(`${key}: ${value}`);
+        // }
+        //console.log(Object.entries(arrCat2));
+        //very convulated way of doing it should have just made a new table :)
+        arrCat3 = Object.entries(arrCat2);
+
         //an array of categories
         //console.log(arrCat);
         //going to have to do some sort of filter
@@ -76,13 +95,23 @@ app.get('/bookmarks', async(req, res, next)=> {
                
                 <ul>
                 ${    
-                     arrCat.map( cat => `
-                        <li>
-                        <a href='/bookmarks/${cat}'>
-                        ${ cat }
-                        </a> () 
-                        </li> 
-                        `).join('')
+
+                    arrCat3.map( cat => `
+                    <li>
+                    <a href='/bookmarks/${cat[0]}'>
+                    ${ cat[0] }
+                    </a> (${ cat[1] }) 
+                    </li> 
+                    `).join('')
+
+
+                    //  arrCat.map( cat => `
+                    //     <li>
+                    //     <a href='/bookmarks/${cat}'>
+                    //     ${ cat }
+                    //     </a> () 
+                    //     </li> 
+                    //     `).join('')
                 
                 }
                 </ul> 
